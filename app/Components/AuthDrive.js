@@ -52,6 +52,12 @@ function getSubFolders(folderId) {
   return walkFilePages(initialRequest);
 }
 
+function delay(ms) {
+  return new Promise(function (v) {
+    setTimeout(v, ms);
+  });
+}
+
 module.exports = React.createClass({
 
     getInitialState: function() {
@@ -71,23 +77,24 @@ module.exports = React.createClass({
         }).execute((resp) => {
           var folders = resp.files;
           var soundFolderId = folders[0].id;
-          var tree = {
-          };
-          getSubFolders(soundFolderId).then((folders) => {
+
+          var fileTree = getSubFolders(soundFolderId).then((folders) => {
             let i = 0;
-            return Promise.map(folders, function(folder) {
-              (function(index) {
-                setTimeout(function() {
-                  retrieveAllFiles(folder.id).then(function (files) {
-                    tree[folder.title] = folder;
-                    tree[folder.title]._files = files;
-                    console.log(tree);
-                  })
-                }, index * 100);
-              })(i);
+            return Promise.reduce(folders, function(tree, folder) {
               i++;
-            });
+              return delay(i * 100).then(() => {
+                return retrieveAllFiles(folder.id).then(function (files) {
+                  tree[folder.title] = folder;
+                  tree[folder.title]._files = files;
+                  return tree;
+                })
+              });
+            }, {});
           });
+
+          fileTree.then((tree) => {
+            console.log(tree);
+          })
         });
         //.then(resp => {
 
