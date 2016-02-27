@@ -52,12 +52,6 @@ function getSubFolders(folderId) {
   return walkFilePages(initialRequest);
 }
 
-function delay(ms) {
-  return new Promise(function (v) {
-    setTimeout(v, ms);
-  });
-}
-
 module.exports = React.createClass({
 
     getInitialState: function() {
@@ -79,10 +73,8 @@ module.exports = React.createClass({
           var soundFolderId = folders[0].id;
 
           var fileTree = getSubFolders(soundFolderId).then((folders) => {
-            let i = 0;
             return Promise.reduce(folders, function(tree, folder) {
-              i++;
-              return delay(i * 100).then(() => {
+              return Promise.delay(100).then(() => {
                 return retrieveAllFiles(folder.id).then(function (files) {
                   tree[folder.title] = folder;
                   tree[folder.title]._files = files;
@@ -94,20 +86,9 @@ module.exports = React.createClass({
 
           fileTree.then((tree) => {
             console.log(tree);
+            _this.setState({tree: tree});
           })
         });
-        //.then(resp => {
-
-        //  return googleApiLoader.execute(() => {
-        //    return gapi.client.drive.files.list({
-        //      'q': "mimeType='audio/mpeg'"
-        //    });
-        //  }).then(resp => {
-        //    var files = resp.files;
-        //    console.log(resp);
-        //    _this.setState({files: files});
-        //  });
-        //});
       });
     },
 
