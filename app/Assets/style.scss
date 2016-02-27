@@ -1,3 +1,5 @@
+@import url('//code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css');
+@import url('//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css');
 @import url('//fonts.googleapis.com/css?family=Roboto');
 
 * {
@@ -25,4 +27,29 @@ body {
   	justify-content: center;
   	border-bottom: 1px solid #e1e1e1;
   	background-color: #fAfAfA;
+}
+
+.btn-google-plus {
+  color: #fff;
+  background-color: #dd4b39;
+  border: 1px solid #d54331;
+}
+
+.btn-google-plus:hover,
+.btn-google-plus:focus {
+  color: #fff;
+  background-color: #cb3927;
+}
+
+.btn [class^='ion-'] {
+  margin-right: 5px;
+}
+
+.btn .fa {
+  margin-right: 5px;
+}
+
+.center-form {
+  width: 330px;
+  margin: 12% auto;
 }

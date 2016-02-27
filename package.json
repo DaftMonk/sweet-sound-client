@@ -5,7 +5,7 @@
   "main": "server/index.js",
   "scripts": {
     "dev-server": "nodemon server/index.js --watch server",
-    "dev-web": "webpack-dev-server --config ./webpack-dev.config.js --hot --progress --colors --content-base build", 
+    "dev-web": "webpack-dev-server --config ./webpack-dev.config.js --hot --progress --colors --content-base build",
     "dev": "nodemon server/index.js --watch server & webpack-dev-server --config ./webpack-dev.config.js --hot --progress --colors --content-base build",
     "build": "rm build/*; webpack --config ./webpack-prod.config.js --progress --colors",
     "start": "node server/index.js",
@@ -16,6 +16,7 @@
   "author": "Chris Greening",
   "license": "MIT",
   "dependencies": {
+    "bluebird": "^3.3.3",
     "compression": "^1.5.0",
     "cors": "^2.7.1",
     "express": "^4.12.4"
@@ -30,6 +31,7 @@
     "file-loader": "^0.8.4",
     "html-webpack-plugin": "^1.5.2",
     "image-webpack-loader": "^1.6.1",
+    "json-loader": "^0.5.2",
     "karma": "^0.12.36",
     "karma-chrome-launcher": "^0.1.12",
     "karma-cli": "0.0.4",
