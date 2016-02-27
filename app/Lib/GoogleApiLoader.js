@@ -1,83 +1,58 @@
 /* global gapi */
 
-import Promise from 'bluebird';
+import Promise     from 'bluebird';
+import appSettings from 'json!../../google_app_settings.json';
 
-var appSettings = require("json!../../google_app_settings.json");
-var EventEmitter = require('events').EventEmitter;
+let currentUser = null;
 
+let allClientsAvailable = false;
 
-let googleApiEvents = new EventEmitter();
-let isAuthorizing = false;
-let isAuthorized = false;
-let resolveClientsAvailable;
-let allClientsAvailable = new Promise(function (resolve) {
-  resolveClientsAvailable = resolve;
-});
-let auth2;
+/**
+ * Load Client libraries
+ * @returns {Promise}
+ */
+const loadClients = Promise.promisify(function(done) {
+  let clientsLoaded = 0;
 
-function gapiLoaded(callback) {
-  var hasgapi = function () {
-    if (typeof (gapi) !== "undefined" && gapi.client) {
-      callback();
-    }
-    else {
-      window.setTimeout(function () {
-        hasgapi();
-      }, 50);
-    }
+  if(allClientsAvailable) {
+    done(null, true);
   }
 
-  hasgapi();
-}
+  var clientLoaded = function clientLoaded() {
+    clientsLoaded++;
+    if(appSettings.libraries.length === clientsLoaded) {
+      allClientsAvailable = true;
+      done(null, true);
+    }
+  };
 
-gapiLoaded(tryAuthorize);
+  for (var i = 0; i < appSettings.libraries.length; i++) {
+    var client = appSettings.libraries[i];
+    gapi.client.load(client.name, client.version, clientLoaded);
+  }
+});
 
-
-function tryAuthorize() {
-  googleApiEvents.emit('authorization-request');
-  isAuthorizing = true;
-
-  gapi.load('auth2', function () {
-    auth2 = gapi.auth2.init({
-      client_id: appSettings.client_id,
-      scopes: appSettings.scopes.join(' '),
+/**
+ * Get Current User
+ * @returns {Promise}
+ */
+const getCurrentUser = Promise.promisify(function (done) {
+  getAuth2().then((auth2) => {
+    auth2.currentUser.listen(function (user) {
+      done(null, user);
     });
   });
-}
+});
 
-function whenAuthenticated(authResult) {
-  isAuthorizing = false;
-  if (authResult && !authResult.error) {
-    let clientsLoaded = 0;
-
-    googleApiEvents.emit('authorization-success');
-    isAuthorized = true;
-
-    var clientLoaded = function clientLoaded() {
-      clientsLoaded++;
-      if(appSettings.libraries.length === clientsLoaded) {
-        googleApiEvents.emit('clients-loaded');
-        resolveClientsAvailable(true);
-      }
-    };
-
-    for (var i = 0; i < appSettings.libraries.length; i++) {
-      var client = appSettings.libraries[i];
-      gapi.client.load(client.name, client.version, clientLoaded);
-    }
-  } else {
-    isAuthorized = false;
-    googleApiEvents.emit('authorization-failure');
-  }
-}
 
 /**
  * Executes a Google API request (anything with an execute method), turning
  * it into a promise. The promise is rejected if the response contains an
  * error field, resolved otherwise.
+ * @returns {Promise}
  */
-function execute(request) {
-  return allClientsAvailable.then(() => {
+const execute = function (request) {
+  return loadLibraries().then(() => {
     return new Promise((resolve, reject) => {
       request().execute(response => {
         if (response.error) {
@@ -89,27 +64,71 @@ function execute(request) {
       });
     });
   });
-}
+};
 
-function login() {
-  var options = new gapi.auth2.SigninOptionsBuilder({
-    scopes: appSettings.scopes.join(' ')
-  });
+/**
+ * Login
+ * @returns {Promise}
+ */
+const login = function () {
+  return getAuth2().then((auth2) => {
+    let options = new gapi.auth2.SigninOptionsBuilder({
+      scopes: appSettings.scopes.join(' ')
+    });
 
-  isAuthorizing = true;
-  auth2.signIn(options).then(function (success) {
-    isAuthorizing = false;
-    isAuthorized = true;
-  }, function (fail) {
-    isAuthorizing = false;
-    isAuthorized = true;
+    return auth2.signIn(options);
   });
-}
+};
+
+/**
+ * gapi client loaded
+ * @returns {Promise}
+ */
+const gapiLoaded = Promise.promisify(function (callback) {
+  var checkGapi = function () {
+    if (typeof (gapi) !== "undefined" && gapi.client) {
+      callback();
+    }
+    else {
+      window.setTimeout(function () {
+        checkGapi();
+      }, 50);
+    }
+  };
+
+  checkGapi();
+});
+
+/**
+ * Load gapi and client libaries
+ * @returns {Promise}
+ */
+const loadLibraries = function() {
+  return gapiLoaded().then(() => {
+    return loadClients();
+  });
+};
+
+loadLibraries().then(() => {
+
+});
+
+let auth2;
+const getAuth2 = Promise.promisify(function(callback) {
+  if(auth2) {
+    callback(null, auth2);
+  }
+  gapi.load('auth2', function () {
+    auth2 = gapi.auth2.init({
+      client_id: appSettings.client_id,
+      scopes: appSettings.scopes.join(' '),
+    });
+    callback(null, auth2);
+  });
+});
 
 module.exports = {
-  events: googleApiEvents,
+  getCurrentUser,
   execute,
-  login,
-  isAuthorizing,
-  isAuthorized
+  login
 };

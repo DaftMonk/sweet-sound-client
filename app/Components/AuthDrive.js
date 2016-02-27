@@ -11,16 +11,19 @@ module.exports = React.createClass({
     componentDidMount: function () {
       var _this = this;
 
-      googleApiLoader.execute(() => {
-        return gapi.client.drive.files.list({
-          'pageSize': 10,
-          'fields': "nextPageToken, files(id, name)"
-        });
-      }).then(resp => {
-        var files = resp.files;
-        _this.setState({files: files});
-      });
+      googleApiLoader.getCurrentUser(() => {
+        _this.setState({isAuthorized: true});
 
+        googleApiLoader.execute(() => {
+          return gapi.client.drive.files.list({
+            'pageSize': 10,
+            'fields': "nextPageToken, files(id, name)"
+          });
+        }).then(resp => {
+          var files = resp.files;
+          _this.setState({files: files});
+        });
+      });
     },
 
     signIn: function () {
@@ -34,19 +37,14 @@ module.exports = React.createClass({
         </button>
       );
 
-      if (!googleApiLoader.isAuthorizing) {
-
-        if (googleApiLoader.isAuthorized) {
-          return (<div>
-             You're now free to use the Google APIs!
-          </div>)
-        }
-        else {
-          return toggleLoginButton;
-        }
+      if (this.state.isAuthorized) {
+        return (<div>
+           You're now free to use the Google APIs!
+        </div>)
       }
       else {
-        return (<div>Loading...</div>);
+        return toggleLoginButton;
       }
+
     }
 });
