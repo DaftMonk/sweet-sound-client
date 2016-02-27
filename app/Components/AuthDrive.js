@@ -11,16 +11,17 @@ module.exports = React.createClass({
     componentDidMount: function () {
       var _this = this;
 
-      googleApiLoader.getCurrentUser(() => {
+      googleApiLoader.apiReady.then(() => {
         _this.setState({isAuthorized: true});
 
-        googleApiLoader.execute(() => {
+        return googleApiLoader.execute(() => {
           return gapi.client.drive.files.list({
             'pageSize': 10,
             'fields': "nextPageToken, files(id, name)"
           });
         }).then(resp => {
           var files = resp.files;
+          console.log(files);
           _this.setState({files: files});
         });
       });

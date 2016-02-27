@@ -3,9 +3,18 @@
 import Promise     from 'bluebird';
 import appSettings from 'json!../../google_app_settings.json';
 
-let currentUser = null;
-
 let allClientsAvailable = false;
+
+let apiReadyResolve;
+
+const apiReady = new Promise((resolve, reject) => {
+  apiReadyResolve = resolve;
+})
+
+window.checkAuth = function() {
+  login(true).catch(function(err) {
+  });
+};
 
 /**
  * Load Client libraries
@@ -32,18 +41,6 @@ const loadClients = Promise.promisify(function(done) {
   }
 });
 
-/**
- * Get Current User
- * @returns {Promise}
- */
-const getCurrentUser = Promise.promisify(function (done) {
-  getAuth2().then((auth2) => {
-    auth2.currentUser.listen(function (user) {
-      done(null, user);
-    });
-  });
-});
-
 
 /**
  * Executes a Google API request (anything with an execute method), turning
@@ -52,16 +49,13 @@ const getCurrentUser = Promise.promisify(function (done) {
  * @returns {Promise}
  */
 const execute = function (request) {
-  return loadLibraries().then(() => {
-    return new Promise((resolve, reject) => {
-      request().execute(response => {
-        if (response.error) {
-          console.error('API Error', response.error);
-          reject(response.error);
-          return;
-        }
-        resolve(response);
-      });
+  return new Promise((resolve, reject) => {
+    request().execute(response => {
+      if (response.error) {
+        console.error('API Error', response.error);
+        reject(response.error);
+      }
+      resolve(response);
     });
   });
 };
@@ -70,65 +64,37 @@ const execute = function (request) {
  * Login
  * @returns {Promise}
  */
-const login = function () {
-  return getAuth2().then((auth2) => {
-    let options = new gapi.auth2.SigninOptionsBuilder({
-      scopes: appSettings.scopes.join(' ')
+const login = function (immediate) {
+  return new Promise(function(resolve, reject) {
+    gapi.auth.authorize({
+      'client_id': appSettings['client_id'],
+      'scope': appSettings.scopes.join(' '),
+      'immediate': immediate
+    }, function(authResult) {
+      if (authResult && !authResult.error) {
+        loadClients().then(() => {
+          apiReadyResolve(true);
+          resolve(authResult)
+        });
+      } else {
+        reject(new Error('Unable to authenticate'));
+      }
     });
-
-    return auth2.signIn(options);
   });
 };
 
-/**
- * gapi client loaded
- * @returns {Promise}
- */
-const gapiLoaded = Promise.promisify(function (callback) {
-  var checkGapi = function () {
-    if (typeof (gapi) !== "undefined" && gapi.client) {
-      callback();
-    }
-    else {
-      window.setTimeout(function () {
-        checkGapi();
-      }, 50);
-    }
-  };
-
-  checkGapi();
-});
-
-/**
- * Load gapi and client libaries
- * @returns {Promise}
- */
-const loadLibraries = function() {
-  return gapiLoaded().then(() => {
-    return loadClients();
-  });
+const loadScript = function() {
+  var script = window.document.createElement('script');
+  self.script = script;
+  script.type = 'text/javascript';
+  script.src = 'https://apis.google.com/js/client.js?onload=checkAuth';
+  window.document.body.appendChild(script);
 };
 
-loadLibraries().then(() => {
-
-});
-
-let auth2;
-const getAuth2 = Promise.promisify(function(callback) {
-  if(auth2) {
-    callback(null, auth2);
-  }
-  gapi.load('auth2', function () {
-    auth2 = gapi.auth2.init({
-      client_id: appSettings.client_id,
-      scopes: appSettings.scopes.join(' '),
-    });
-    callback(null, auth2);
-  });
-});
+loadScript();
 
 module.exports = {
-  getCurrentUser,
+  apiReady,
   execute,
   login
 };
