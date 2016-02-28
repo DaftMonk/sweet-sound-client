@@ -1,3 +1,4 @@
+var path = require('path');
 var HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = {    
@@ -19,17 +20,17 @@ module.exports = {
   // styles
   {
     test: /\.[s]?css$/,
-    loader: "style!css!autoprefixer-loader?browsers=last 2 version!sass"
-  }, 
+    loader: "style!css!autoprefixer-loader?browsers=last 2 version!sass?includePaths[]=" + (path.resolve(__dirname, "./node_modules"))
+  },
   // and font files - embed them if possible
-  { 
-    test: /\.woff(\?v=\d+\.\d+\.\d+)?$/, loader: "url?limit=10000&minetype=application/font-woff" 
+  {
+    test: /\.woff(\?v=\d+\.\d+\.\d+)?$/, loader: "url-loader?limit=10000&minetype=application/font-woff"
   }, { 
-    test: /\.woff2(\?v=\d+\.\d+\.\d+)?$/, loader: "url?limit=10000&minetype=application/font-woff2" 
+    test: /\.woff2(\?v=\d+\.\d+\.\d+)?$/, loader: "url-loader?limit=10000&minetype=application/font-woff2"
   }, { 
-    test: /\.ttf(\?v=\d+\.\d+\.\d+)?$/, loader: "url?limit=10000&minetype=application/octet-stream" 
+    test: /\.ttf(\?v=\d+\.\d+\.\d+)?$/, loader: "url-loader?limit=10000&minetype=application/octet-stream"
   }, { 
-    test: /\.eot(\?v=\d+\.\d+\.\d+)?$/, loader: "file" 
+    test: /\.eot(\?v=\d+\.\d+\.\d+)?$/, loader: "file-loader"
   }
   ],
   // https://www.npmjs.com/package/html-webpack-plugin - generate our html file from a template - makes it easier to include custom stuff
