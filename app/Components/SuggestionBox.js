@@ -10,6 +10,11 @@ function getSuggestionValue(suggestion) {
   return suggestion.title;
 }
 
+function getSectionSuggestions(section) {
+  return section.files;
+}
+
+
 function renderSuggestion(suggestion) {
   return (
     <span>{suggestion.title}</span>
@@ -22,9 +27,17 @@ function renderSectionTitle(section) {
   );
 }
 
-function getSectionSuggestions(section) {
-  return section.files;
+function sortFiles(a, b, value) {
+  if(value) {
+    return (
+      a.title.toLowerCase().indexOf(value.toLowerCase()) >
+      b.title.toLowerCase().indexOf(value.toLowerCase()) ? 1 : -1
+    )
+  } else {
+    return a.title === b.title? 0 : a.title< b.title? -1 : 1;
+  }
 }
+
 
 export default class SuggestionBox extends React.Component {
   constructor() {
@@ -47,19 +60,35 @@ export default class SuggestionBox extends React.Component {
   }
 
   getSuggestions(value) {
-    const escapedValue = escapeRegexCharacters(value.trim());
+    let fileQ = escapeRegexCharacters(value.trim());
 
-    if (escapedValue === '') {
+    if (fileQ === '') {
       return [];
     }
 
-    const regex = new RegExp('^' + escapedValue, 'i');
+    let matchingFolders = this.state.folders;
 
-    return this.state.folders
+    let folderSearch = value.split(':');
+    if(folderSearch.length === 2) {
+      const folderQ = folderSearch[0].trim();
+      const folderRegex = new RegExp('^' + folderQ, 'i');
+      fileQ = folderSearch[1].trim();
+
+      matchingFolders = this.state.folders.filter(folder => folderRegex.test(folder.title))
+    }
+
+    const fileRegex = new RegExp('^' + fileQ, 'i');
+
+    return matchingFolders
       .map(folder => {
+        let files = fileQ ? folder.files.filter(file => fileRegex.test(file.title)) : folder.files;
+        files = files.sort((a, b) => (
+          sortFiles(a, b, fileQ)
+        ));
+
         return {
           title: folder.title,
-          files: folder.files.filter(file => regex.test(file.title))
+          files: files
         };
       })
       .filter(folder => folder.files.length > 0);
