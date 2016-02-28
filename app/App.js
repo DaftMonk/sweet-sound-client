@@ -1,9 +1,9 @@
-var React = require('react');
+import React from 'react';
+import Favicon from 'react-favicon';
 
-var Header = require('./Components/Header');
-var Content = require('./Components/Content');
-var AuthDrive = require('./Components/AuthDrive');
-var Favicon = require('react-favicon');
+import Header from './Components/Header';
+import Content from './Components/Content';
+import AuthDrive from './Components/AuthDrive';
 
 var faviconUrl = require('./Assets/favicon.ico');
 

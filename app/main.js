@@ -1,7 +1,8 @@
 require("./Assets/style.scss")
 
-var React = require('react');
+import React from 'react';
+import { render } from 'react-dom';
 
-var App = require('./App.js');
+import App from './App.js';
 
-React.render(<App/>, document.getElementById('body'))
+render(<App/>, document.getElementById('app'));

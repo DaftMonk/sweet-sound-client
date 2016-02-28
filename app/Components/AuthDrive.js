@@ -2,6 +2,7 @@ import Promise from 'bluebird';
 import React from 'react';
 import googleApiLoader from '../Lib/GoogleAPILoader';
 import _ from 'lodash';
+import SuggestionBox from './SuggestionBox';
 
 var walkFilePages = function(request) {
   return new Promise((resolve) => {
@@ -72,21 +73,20 @@ module.exports = React.createClass({
           var folders = resp.files;
           var soundFolderId = folders[0].id;
 
-          var fileTree = getSubFolders(soundFolderId).then((folders) => {
-            return Promise.reduce(folders, function(tree, folder) {
+          var getSoundFolders = getSubFolders(soundFolderId).then((folders) => {
+            return Promise.reduce(folders, function(soundFolders, folder) {
               return Promise.delay(100).then(() => {
                 return retrieveAllFiles(folder.id).then(function (files) {
-                  tree[folder.title] = folder;
-                  tree[folder.title]._files = files;
-                  return tree;
+                  folder._files = files;
+                  soundFolders.push(folder);
+                  return soundFolders;
                 })
               });
-            }, {});
+            }, []);
           });
 
-          fileTree.then((tree) => {
-            console.log(tree);
-            _this.setState({tree: tree});
+          getSoundFolders.then((soundFolders) => {
+            _this.setState({folders: soundFolders});
           })
         });
       });
@@ -106,6 +106,7 @@ module.exports = React.createClass({
       if (this.state.isAuthorized) {
         return (<div>
            You're now free to use the Google APIs!
+          <SuggestionBox folders={this.state.folders}/>
         </div>)
       }
       else {
