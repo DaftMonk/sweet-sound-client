@@ -77,7 +77,7 @@ module.exports = React.createClass({
             return Promise.reduce(folders, function(soundFolders, folder) {
               return Promise.delay(100).then(() => {
                 return retrieveAllFiles(folder.id).then(function (files) {
-                  folder._files = files;
+                  folder.files = files;
                   soundFolders.push(folder);
                   return soundFolders;
                 })
