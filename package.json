@@ -30,6 +30,7 @@
     "babel-runtime": "^5.5.8",
     "bootstrap-sass": "^3.3.6",
     "css-loader": "^0.14.5",
+    "dom-scroll-into-view": "^1.1.0",
     "expect": "^1.6.0",
     "file-loader": "^0.8.5",
     "fuse.js": "github:krisk/Fuse#v2.0.1",

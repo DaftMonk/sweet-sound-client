@@ -1,5 +1,6 @@
 import React from 'react';
 import Autosuggest from 'react-autosuggest';
+import scrollIntoView from 'dom-scroll-into-view';
 
 // https://developer.mozilla.org/en/docs/Web/JavaScript/Guide/Regular_Expressions#Using_Special_Characters
 function escapeRegexCharacters(str) {
@@ -54,6 +55,20 @@ export default class SuggestionBox extends React.Component {
   }
 
   onChange(event, { newValue, method }) {
+    // really ugly hack to get focused element scrolled into view
+    // waiting for way to do this officially: https://github.com/moroshko/react-autosuggest/issues/21
+    setTimeout(function() {
+      var focusedElems = document.getElementsByClassName('react-autosuggest__suggestion--focused');
+      if(focusedElems.length) {
+        console.log(focusedElems);
+        let itemNode = focusedElems[0];
+        let menuNode = document.getElementsByClassName('react-autosuggest__suggestions-container')[0];
+        scrollIntoView(itemNode, menuNode, {
+          onlyScrollIfNeeded: true
+        })
+      }
+    });
+
     this.setState({
       value: newValue
     });
@@ -117,7 +132,8 @@ export default class SuggestionBox extends React.Component {
     };
 
     return (
-      <Autosuggest multiSection={true}
+      <Autosuggest
+                   multiSection={true}
                    suggestions={suggestions}
                    onSuggestionsUpdateRequested={this.onSuggestionsUpdateRequested}
                    getSuggestionValue={getSuggestionValue}
