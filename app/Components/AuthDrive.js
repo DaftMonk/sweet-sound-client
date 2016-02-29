@@ -3,6 +3,7 @@ import React from 'react';
 import googleApiLoader from '../Lib/GoogleAPILoader';
 import _ from 'lodash';
 import SuggestionBox from './SuggestionBox';
+import PreviewSound from './PreviewSound';
 
 var walkFilePages = function(request) {
   return new Promise((resolve) => {
@@ -56,7 +57,11 @@ function getSubFolders(folderId) {
 module.exports = React.createClass({
 
     getInitialState: function() {
-      return { serverData: null };
+      return {
+        isAuthorized: false,
+        selectedSound: {},
+        folders: []
+      };
     },
 
     componentDidMount: function () {
@@ -92,8 +97,12 @@ module.exports = React.createClass({
       });
     },
 
-    signIn: function () {
+    signIn() {
       googleApiLoader.login();
+    },
+
+    onSuggestionSelected(e, data) {
+      this.setState({ selectedSound: data.suggestion });
     },
 
     render: function () {
@@ -106,7 +115,9 @@ module.exports = React.createClass({
       if (this.state.isAuthorized) {
         return (<div>
            You're now free to use the Google APIs!
-          <SuggestionBox folders={this.state.folders}/>
+          <SuggestionBox folders={this.state.folders} onSuggestionSelected={this.onSuggestionSelected}/>
+
+          preview sound <PreviewSound downloadUrl={this.state.selectedSound.downloadUrl} />
         </div>)
       }
       else {

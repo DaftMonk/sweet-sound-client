@@ -126,7 +126,7 @@ export default class SuggestionBox extends React.Component {
   render() {
     const { value, suggestions } = this.state;
     const inputProps = {
-      placeholder: "Type 'c'",
+      placeholder: "Search for a sound",
                    value,
       onChange: this.onChange
     };
@@ -134,6 +134,7 @@ export default class SuggestionBox extends React.Component {
     return (
       <Autosuggest
                    multiSection={true}
+                   onSuggestionSelected={this.props.onSuggestionSelected}
                    suggestions={suggestions}
                    onSuggestionsUpdateRequested={this.onSuggestionsUpdateRequested}
                    getSuggestionValue={getSuggestionValue}
