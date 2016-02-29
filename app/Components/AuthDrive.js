@@ -4,6 +4,7 @@ import googleApiLoader from '../Lib/GoogleAPILoader';
 import _ from 'lodash';
 import SuggestionBox from './SuggestionBox';
 import PreviewSound from './PreviewSound';
+import Spinner from 'react-spinkit';
 
 var walkFilePages = function(request) {
   return new Promise((resolve) => {
@@ -122,12 +123,16 @@ module.exports = React.createClass({
           <span className="ion-social-googleplus"></span>Sign in with Google
         </button>
       );
+      var spinner;
+      if(!this.state.folders.length) {
+        spinner = (<div><Spinner spinnerName='three-bounce' /> Loading drive files...</div>);
+      }
 
       if (this.state.isAuthorized) {
         return (<div>
+          {spinner}
           <SuggestionBox folders={this.state.folders} onSuggestionSelected={this.onSuggestionSelected} onKeyDown={this.onSuggestionKeyDown}/>
-
-          preview sound <PreviewSound downloadUrl={this.state.selectedSound.downloadUrl} />
+          <PreviewSound downloadUrl={this.state.selectedSound.downloadUrl} />
         </div>)
       }
       else {
