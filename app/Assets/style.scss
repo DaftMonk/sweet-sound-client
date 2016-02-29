@@ -1,5 +1,6 @@
 @import url('//code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css');
 @import url('//fonts.googleapis.com/css?family=Roboto');
+@import url('//fonts.googleapis.com/css?family=Open+Sans:300,400,700');
 
 $icon-font-path: "~bootstrap-sass/assets/fonts/bootstrap/";
 
@@ -36,6 +37,7 @@ body {
 	display: flex;
 	flex-direction: column;
 	align-items: center;
+    background-color: #f0f0f0;
 }
 
 .header {
@@ -47,8 +49,14 @@ body {
 	align-items: center;
 	width: 100%;
   	justify-content: center;
-  	border-bottom: 1px solid #e1e1e1;
-  	background-color: #fAfAfA;
+  	color: #4F8EF7;
+    font-family: 'Open Sans';
+    font-weight: 300;
+    text-align: center;
+    font-size: 28px;
+    line-height: 22px;
+    margin-top: -4px;
+    padding-bottom: 40px;
 }
 
 .btn-google-plus {

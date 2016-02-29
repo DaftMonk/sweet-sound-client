@@ -2,7 +2,6 @@ import React from 'react';
 import Favicon from 'react-favicon';
 
 import Header from './Components/Header';
-import Content from './Components/Content';
 import AuthDrive from './Components/AuthDrive';
 
 var faviconUrl = require('./Assets/favicon.ico');
