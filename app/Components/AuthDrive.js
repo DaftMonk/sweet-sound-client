@@ -105,6 +105,17 @@ module.exports = React.createClass({
       this.setState({ selectedSound: data.suggestion });
     },
 
+    onSuggestionKeyDown(e) {
+      // enter key
+      if (e.keyCode == 13) {
+        // ugly hack, refactor with redux
+        setTimeout(function() {
+          let event = new window.CustomEvent('playSound');
+          window.dispatchEvent(event);
+        });
+      }
+    },
+
     render: function () {
       var toggleLoginButton = (
         <button className="btn btn-block btn-google-plus" onClick={this.signIn}>
@@ -114,8 +125,7 @@ module.exports = React.createClass({
 
       if (this.state.isAuthorized) {
         return (<div>
-           You're now free to use the Google APIs!
-          <SuggestionBox folders={this.state.folders} onSuggestionSelected={this.onSuggestionSelected}/>
+          <SuggestionBox folders={this.state.folders} onSuggestionSelected={this.onSuggestionSelected} onKeyDown={this.onSuggestionKeyDown}/>
 
           preview sound <PreviewSound downloadUrl={this.state.selectedSound.downloadUrl} />
         </div>)

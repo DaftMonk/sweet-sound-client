@@ -128,7 +128,8 @@ export default class SuggestionBox extends React.Component {
     const inputProps = {
       placeholder: "Search for a sound",
                    value,
-      onChange: this.onChange
+      onChange: this.onChange,
+      onKeyDown: this.props.onKeyDown
     };
 
     return (
