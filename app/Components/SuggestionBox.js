@@ -60,7 +60,6 @@ export default class SuggestionBox extends React.Component {
     setTimeout(function() {
       var focusedElems = document.getElementsByClassName('react-autosuggest__suggestion--focused');
       if(focusedElems.length) {
-        console.log(focusedElems);
         let itemNode = focusedElems[0];
         let menuNode = document.getElementsByClassName('react-autosuggest__suggestions-container')[0];
         scrollIntoView(itemNode, menuNode, {

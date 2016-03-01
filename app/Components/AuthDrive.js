@@ -114,7 +114,6 @@ module.exports = React.createClass({
     },
 
     playSound() {
-      console.log('3')
       setTimeout(function() {
         let event = new window.CustomEvent('playSound');
         window.dispatchEvent(event);
@@ -123,14 +122,12 @@ module.exports = React.createClass({
 
     sendToSlack() {
       setTimeout(function() {
-        console.log('2')
         let event = new window.CustomEvent('sendToSlack');
         window.dispatchEvent(event);
       });
     },
 
     stopSound() {
-      console.log('1')
       setTimeout(function() {
         let event = new window.CustomEvent('stopSound');
         window.dispatchEvent(event);
@@ -145,37 +142,52 @@ module.exports = React.createClass({
         'stopSound': this.stopSound
       };
 
-      var toggleLoginButton = (
-        <button className="btn btn-block btn-google-plus" onClick={this.signIn}>
-          <span className="ion-social-googleplus"></span>Sign in with Google
-        </button>
-      );
       var spinner;
-      if(!this.state.folders.length) {
-        spinner = (<div><Spinner spinnerName='three-bounce' /> Loading drive files...</div>);
+      if(this.state.isAuthorized && !this.state.folders.length) {
+        spinner = (<div className="help-container"><Spinner spinnerName='three-bounce' noFadeIn={true}/> Loading drive files...</div>);
       }
 
+      var toggleLoginButton;
+      if (!this.state.isAuthorized) {
+        return (
+          <div>
+            <div className="help-container">Sign in with your Google Drive account to search sound files</div>
+            <div className="btn-container">
+              <button className="btn btn-block btn-google-plus" onClick={this.signIn}>
+                <span className="ion-social-googleplus"></span>Sign in with Google
+              </button>
+            </div>
+         </div>
+        );
+      }
+
+      let slackAuth = (
+        <div className="btn-container pull-right">
+          <AuthSlack onAuthenticated={this.onAuthenticatedWithSlack}/>
+        </div>
+      );
+
       let playSound;
-      let slackAuth = <AuthSlack onAuthenticated={this.onAuthenticatedWithSlack}/>
       if(this.state.slackAccessToken) {
-        playSound = (<PlaySlackSound accessToken={this.state.slackAccessToken} soundName={this.state.selectedSound.title}/>);
+        playSound = (
+          <div className="btn-container pull-right">
+            <PlaySlackSound accessToken={this.state.slackAccessToken} soundName={this.state.selectedSound.title}/>
+          </div>);
         slackAuth = null;
       }
 
-      if (this.state.isAuthorized) {
         return (<div>
           {spinner}
-          <HotKeys handlers={handlers}>
-            <SuggestionBox folders={this.state.folders} onSuggestionSelected={this.onSuggestionSelected} onKeyDown={this.onSuggestionKeyDown}/>
-          </HotKeys>
-          <PreviewSound downloadUrl={this.state.selectedSound.downloadUrl} />
-          {playSound}
-          {slackAuth}
+          <div className="content-container">
+            <HotKeys handlers={handlers}>
+              <SuggestionBox folders={this.state.folders} onSuggestionSelected={this.onSuggestionSelected} onKeyDown={this.onSuggestionKeyDown}/>
+            </HotKeys>
+            <PreviewSound downloadUrl={this.state.selectedSound.downloadUrl} />
+            {playSound}
+            {slackAuth}
+            {toggleLoginButton}
+          </div>
         </div>)
-      }
-      else {
-        return toggleLoginButton;
-      }
 
     }
 });

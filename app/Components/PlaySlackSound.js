@@ -24,7 +24,6 @@ export default class PlaySlackSound extends React.Component {
   }
 
   onSendToSlack() {
-    console.log('heey');
     if(this.state.disabled) {
       return;
     }
@@ -54,8 +53,8 @@ export default class PlaySlackSound extends React.Component {
 
   render() {
     return (
-      <button onClick={this.onClick} className="btn btn-primary" disabled={this.state.disabled}>
-        Play that funky music
+      <button onClick={this.onClick} className="btn send-to-slack-btn" disabled={this.state.disabled}>
+        <span className="ion-share icon-center"></span>
       </button>
     );
   }

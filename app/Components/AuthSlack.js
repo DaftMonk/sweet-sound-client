@@ -38,7 +38,7 @@ export default class AuthSlack extends React.Component {
   render() {
     let authUrl = "https://slack.com/oauth/authorize?client_id=" + clientId + "&scope=chat%3Awrite%3Auser"
     return (
-      <a href={authUrl} className="btn btn-block btn-google-plus" onClick={this.signIn}>
+      <a href={authUrl} className="btn btn-default" onClick={this.signIn}>
         <em>#</em> Sign in with Slack
       </a>
     );

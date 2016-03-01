@@ -36,8 +36,8 @@ export default class PreviewSound extends React.Component {
   render() {
     return (
       <div>
-        <button className="btn btn-primary" onClick={this.onClick}>
-          <span className="ion-volume-medium"></span> Preview Sound
+        <button className="btn preview-sound-btn" onClick={this.onClick}>
+          <span className="ion-volume-medium"></span>
         </button>
       </div>
     );
