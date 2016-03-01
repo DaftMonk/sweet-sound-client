@@ -4,6 +4,8 @@ import googleApiLoader from '../Lib/GoogleAPILoader';
 import _ from 'lodash';
 import SuggestionBox from './SuggestionBox';
 import PreviewSound from './PreviewSound';
+import AuthSlack from './AuthSlack';
+import PlaySlackSound from './PlaySlackSound';
 import Spinner from 'react-spinkit';
 
 var walkFilePages = function(request) {
@@ -117,6 +119,10 @@ module.exports = React.createClass({
       }
     },
 
+    onAuthenticatedWithSlack(resp) {
+      this.setState({slackAccessToken: resp.access_token});
+    },
+
     render: function () {
       var toggleLoginButton = (
         <button className="btn btn-block btn-google-plus" onClick={this.signIn}>
@@ -128,11 +134,20 @@ module.exports = React.createClass({
         spinner = (<div><Spinner spinnerName='three-bounce' /> Loading drive files...</div>);
       }
 
+      let playSound;
+      let slackAuth = <AuthSlack onAuthenticated={this.onAuthenticatedWithSlack}/>
+      if(this.state.slackAccessToken) {
+        playSound = (<PlaySlackSound accessToken={this.state.slackAccessToken} soundName={this.state.selectedSound.title}/>);
+        slackAuth = null;
+      }
+
       if (this.state.isAuthorized) {
         return (<div>
           {spinner}
           <SuggestionBox folders={this.state.folders} onSuggestionSelected={this.onSuggestionSelected} onKeyDown={this.onSuggestionKeyDown}/>
           <PreviewSound downloadUrl={this.state.selectedSound.downloadUrl} />
+          {playSound}
+          {slackAuth}
         </div>)
       }
       else {

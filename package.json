@@ -16,11 +16,13 @@
   "author": "Chris Greening",
   "license": "MIT",
   "dependencies": {
+    "babel-polyfill": "^6.6.1",
     "bluebird": "^3.3.3",
     "compression": "^1.5.0",
     "cors": "^2.7.1",
     "express": "^4.12.4",
     "lodash": "^4.5.1",
+    "qs": "^6.1.0",
     "react-autosuggest": "^3.5.0",
     "react-spinkit": "^1.1.4"
   },

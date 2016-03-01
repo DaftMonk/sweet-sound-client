@@ -89,20 +89,12 @@ body {
 }
 
 .react-autosuggest__container {
-  &,
-  *,
-  *:before,
-  *:after {
-    @include box-sizing(content-box);
-  }
-}
-.react-autosuggest__container {
   position: relative;
 }
 
 .react-autosuggest__input {
-  width: 240px;
-  height: 30px;
+  width: 100%;
+  height: 60px;
   padding: 10px 20px;
   font-family: Helvetica, sans-serif;
   font-weight: 300;
@@ -122,8 +114,8 @@ body {
 
 .react-autosuggest__suggestions-container {
   position: absolute;
-  top: 51px;
-  width: 280px;
+  top: 59px;
+  width: 100%;
   margin: 0;
   padding: 0;
   list-style-type: none;
