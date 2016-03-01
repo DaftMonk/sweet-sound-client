@@ -1,1 +1,1 @@
-web: node server/index.js
+web: node ./node_modules/.bin/http-server ./build
