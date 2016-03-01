@@ -25,7 +25,8 @@
     "qs": "^6.1.0",
     "react-autosuggest": "^3.5.0",
     "react-hotkeys": "^0.7.1",
-    "react-spinkit": "^1.1.4"
+    "react-spinkit": "^1.1.4",
+    "sweetalert2": "github:limonte/sweetalert2"
   },
   "devDependencies": {
     "autoprefixer-loader": "^2.0.0",
@@ -36,6 +37,7 @@
     "css-loader": "^0.14.5",
     "dom-scroll-into-view": "^1.1.0",
     "expect": "^1.6.0",
+    "exports-loader": "^0.6.3",
     "file-loader": "^0.8.5",
     "fuse.js": "github:krisk/Fuse#v2.0.1",
     "html-webpack-plugin": "^1.5.2",

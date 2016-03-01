@@ -8,6 +8,7 @@ import AuthSlack from './AuthSlack';
 import PlaySlackSound from './PlaySlackSound';
 import Spinner from 'react-spinkit';
 import {HotKeys} from 'react-hotkeys';
+import swal from 'exports?swal!sweetalert2/src/sweetalert2.js';
 
 var walkFilePages = function(request) {
   return new Promise((resolve) => {
@@ -135,17 +136,23 @@ module.exports = React.createClass({
     },
 
     clickHelp() {
-      alert(`
-Login with Slack to play sounds
-
-Search:
- ":" to get all sound files
- "folder:" to get all sound files in a folder
-
-Shortcuts:
- * command+enter to preview a sound
- * esc to Stop a Preview
- * shift+enter to play a sound on slack`);
+      swal({   title: "Sound Client Help!",   html: `
+<div>Login with Slack to play sounds</div>
+<br>
+<div class="help-list">Search:
+<ul>
+ <li><strong>":"</strong> to get all sound files</li>
+ <li><strong>"folder:"</strong> to get all sound files in a folder</li>
+</ul>
+</div>
+<div class="help-list">Shortcuts:
+<ul>
+  <li><strong>command+enter</strong> to preview a sound</li>
+  <li><strong>esc</strong> to Stop a Preview</li>
+  <li><strong>shift+enter</strong> to play a sound on slack</li>
+</ul>
+</div>
+ ` });
     },
 
     render: function () {
