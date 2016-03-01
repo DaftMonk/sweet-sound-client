@@ -10,7 +10,8 @@
     "build": "rm build/*; webpack --config ./webpack-prod.config.js --progress --colors",
     "start": "node server/index.js",
     "test": "karma start",
-    "testing": "karma start --single-run=false"
+    "testing": "karma start --single-run=false",
+    "postinstall": "npm run build"
   },
   "repository": "git@github.com:cgreening/webpack-starter.git",
   "author": "Chris Greening",
