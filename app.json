@@ -1,6 +1,6 @@
 {
-  "name": "Bare bones webpack project",
-  "description": "Barbones webpack starter sample with react",
-  "repository": "https://github.com/cgreening/simple-webpack-react-starter",
+  "name": "Sweet Sound Client",
+  "description": "Preview and play sounds on slack",
+  "repository": "https://github.com/DaftMonk/sweet-sound-client",
   "keywords": ["node", "express", "webpack", "react"]
 }

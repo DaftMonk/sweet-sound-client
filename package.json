@@ -1,7 +1,7 @@
 {
-  "name": "webpack-starter",
+  "name": "sweet-sound-client",
   "version": "1.0.0",
-  "description": "Bare bones webpack project with a node express server",
+  "description": "Preview and play sounds on slack",
   "main": "server/index.js",
   "scripts": {
     "dev-server": "nodemon server/index.js --watch server",
