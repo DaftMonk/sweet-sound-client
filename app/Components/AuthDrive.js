@@ -7,6 +7,7 @@ import PreviewSound from './PreviewSound';
 import AuthSlack from './AuthSlack';
 import PlaySlackSound from './PlaySlackSound';
 import Spinner from 'react-spinkit';
+import {HotKeys} from 'react-hotkeys';
 
 var walkFilePages = function(request) {
   return new Promise((resolve) => {
@@ -108,22 +109,42 @@ module.exports = React.createClass({
       this.setState({ selectedSound: data.suggestion });
     },
 
-    //onSuggestionKeyDown(e) {
-    //  // enter key
-    //  if (e.keyCode == 13) {
-    //    // ugly hack, refactor with redux
-    //    setTimeout(function() {
-    //      let event = new window.CustomEvent('playSound');
-    //      window.dispatchEvent(event);
-    //    });
-    //  }
-    //},
-
     onAuthenticatedWithSlack(resp) {
       this.setState({slackAccessToken: resp.access_token});
     },
 
+    playSound() {
+      console.log('3')
+      setTimeout(function() {
+        let event = new window.CustomEvent('playSound');
+        window.dispatchEvent(event);
+      });
+    },
+
+    sendToSlack() {
+      setTimeout(function() {
+        console.log('2')
+        let event = new window.CustomEvent('sendToSlack');
+        window.dispatchEvent(event);
+      });
+    },
+
+    stopSound() {
+      console.log('1')
+      setTimeout(function() {
+        let event = new window.CustomEvent('stopSound');
+        window.dispatchEvent(event);
+      });
+    },
+
     render: function () {
+
+      const handlers = {
+        'playSound': this.playSound,
+        'sendToSlack': this.sendToSlack,
+        'stopSound': this.stopSound
+      };
+
       var toggleLoginButton = (
         <button className="btn btn-block btn-google-plus" onClick={this.signIn}>
           <span className="ion-social-googleplus"></span>Sign in with Google
@@ -144,7 +165,9 @@ module.exports = React.createClass({
       if (this.state.isAuthorized) {
         return (<div>
           {spinner}
-          <SuggestionBox folders={this.state.folders} onSuggestionSelected={this.onSuggestionSelected} onKeyDown={this.onSuggestionKeyDown}/>
+          <HotKeys handlers={handlers}>
+            <SuggestionBox folders={this.state.folders} onSuggestionSelected={this.onSuggestionSelected} onKeyDown={this.onSuggestionKeyDown}/>
+          </HotKeys>
           <PreviewSound downloadUrl={this.state.selectedSound.downloadUrl} />
           {playSound}
           {slackAuth}

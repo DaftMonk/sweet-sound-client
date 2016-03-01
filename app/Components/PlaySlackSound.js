@@ -13,10 +13,23 @@ export default class PlaySlackSound extends React.Component {
       disabled: false
     };
 
-    this.playSlackSound = this.playSlackSound.bind(this);
+    this.onSendToSlack = this.onSendToSlack.bind(this);
+
+    // refactor to use redux
+    window.addEventListener('sendToSlack', this.onSendToSlack);
   }
 
-  playSlackSound() {
+  componentWillUnmount() {
+    window.removeEventListener('sendToSlack', this.onSendToSlack);
+  }
+
+  onSendToSlack() {
+    console.log('heey');
+    if(this.state.disabled) {
+      return;
+    }
+
+
     fetch('https://slack.com/api/chat.postMessage?' + qs.stringify({
         token: this.props.accessToken,
         channel: 'sounds',
@@ -25,15 +38,23 @@ export default class PlaySlackSound extends React.Component {
       }), {
       method: 'get',
     });
+
     this.setState({disabled: true});
+
+    // delay spamming slack
     setTimeout(() => {
       this.setState({disabled: false});
     }, 3000)
   }
 
+  onClick() {
+    let event = new window.CustomEvent('sendToSlack');
+    window.dispatchEvent(event);
+  }
+
   render() {
     return (
-      <button onClick={this.playSlackSound} className="btn btn-primary" disabled={this.state.disabled}>
+      <button onClick={this.onClick} className="btn btn-primary" disabled={this.state.disabled}>
         Play that funky music
       </button>
     );

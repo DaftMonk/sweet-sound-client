@@ -147,22 +147,35 @@ SoundLib.loadBuffer.onLoad = function (context, url, buffer) {
  */
 SoundLib.loadBuffer.inProgressCount = 0
 
+let currentSound;
+
 const playSound = function (url, token) {
   // Create lineOut
   var lineOut = new SoundLib.LineOut(context)
 
   // load a sound and play it immediatly
   SoundLib.loadBuffer(context, url, token, function (buffer) {
+    if(currentSound) {
+      currentSound.stop();
+    }
     // init AudioBufferSourceNode
     var source = context.createBufferSource();
+    currentSound = source;
     source.buffer = buffer
     source.connect(lineOut.destination)
 
     // start the sound now
     source.start(0);
   });
-}
+};
+
+const stopSound = function() {
+  if(currentSound) {
+    currentSound.stop();
+  }
+};
 
 export default {
-  playSound
+  playSound,
+  stopSound
 };
