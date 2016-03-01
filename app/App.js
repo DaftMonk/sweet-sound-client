@@ -1,11 +1,8 @@
 import React from 'react';
-import Favicon from 'react-favicon';
 
 import Header from './Components/Header';
 import AuthDrive from './Components/AuthDrive';
 import {HotKeys} from 'react-hotkeys';
-
-var faviconUrl = require('./Assets/favicon.ico');
 
 
 const map = {
@@ -26,7 +23,6 @@ module.exports = React.createClass({
               <div className="panel-body">
                   <Header/>
                   <AuthDrive/>
-                  <Favicon url={ faviconUrl }/>
               </div>
             </div>
           </div>
