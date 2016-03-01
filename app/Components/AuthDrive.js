@@ -134,6 +134,20 @@ module.exports = React.createClass({
       });
     },
 
+    clickHelp() {
+      alert(`
+Login with Slack to play sounds
+
+Search:
+ ":" to get all sound files
+ "folder:" to get all sound files in a folder
+
+Shortcuts:
+ * command+enter to preview a sound
+ * esc to Stop a Preview
+ * shift+enter to play a sound on slack`);
+    },
+
     render: function () {
 
       const handlers = {
@@ -147,7 +161,6 @@ module.exports = React.createClass({
         spinner = (<div className="help-container"><Spinner spinnerName='three-bounce' noFadeIn={true}/> Loading drive files...</div>);
       }
 
-      var toggleLoginButton;
       if (!this.state.isAuthorized) {
         return (
           <div>
@@ -167,6 +180,14 @@ module.exports = React.createClass({
         </div>
       );
 
+      let helpBtn = (
+        <div className="btn-container">
+          <button className="btn btn-default" onClick={this.clickHelp}>
+            <span className="ion-help"></span>
+          </button>
+        </div>
+      )
+
       let playSound;
       if(this.state.slackAccessToken) {
         playSound = (
@@ -185,7 +206,7 @@ module.exports = React.createClass({
             <PreviewSound downloadUrl={this.state.selectedSound.downloadUrl} />
             {playSound}
             {slackAuth}
-            {toggleLoginButton}
+            {helpBtn}
           </div>
         </div>)
 
