@@ -108,6 +108,17 @@ module.exports = React.createClass({
       this.setState({ selectedSound: data.suggestion });
     },
 
+    //onSuggestionKeyDown(e) {
+    //  // enter key
+    //  if (e.keyCode == 13) {
+    //    // ugly hack, refactor with redux
+    //    setTimeout(function() {
+    //      let event = new window.CustomEvent('playSound');
+    //      window.dispatchEvent(event);
+    //    });
+    //  }
+    //},
+
     onAuthenticatedWithSlack(resp) {
       this.setState({slackAccessToken: resp.access_token});
     },
