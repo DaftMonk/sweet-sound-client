@@ -148,7 +148,7 @@ module.exports = React.createClass({
 <div class="help-list">Shortcuts:
 <ul>
   <li><strong>command+enter</strong> to preview a sound</li>
-  <li><strong>esc</strong> to Stop a Preview</li>
+  <li><strong>esc</strong> to stop a preview</li>
   <li><strong>shift+enter</strong> to play a sound on slack</li>
 </ul>
 </div>
