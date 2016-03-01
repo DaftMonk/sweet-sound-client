@@ -57,7 +57,8 @@
     "webpack-dev-server": "^1.9.0"
   },
   "engines" : {
-    "node" : "~4.x"
+    "node": "~4.x",
+    "npm": "~2.x"
   },
   "devDependencies": {
     "karma": "^0.12.36",
