@@ -26,9 +26,7 @@
     "react-autosuggest": "^3.5.0",
     "react-hotkeys": "^0.7.1",
     "react-spinkit": "^1.1.4",
-    "sweetalert2": "github:limonte/sweetalert2"
-  },
-  "devDependencies": {
+    "sweetalert2": "github:limonte/sweetalert2",
     "autoprefixer-loader": "^2.0.0",
     "babel-core": "^5.5.8",
     "babel-loader": "^5.1.4",
@@ -65,5 +63,7 @@
     "url-loader": "^0.5.7",
     "webpack": "^1.9.11",
     "webpack-dev-server": "^1.9.0"
+  },
+  "devDependencies": {
   }
 }
