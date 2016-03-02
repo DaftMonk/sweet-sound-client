@@ -1,5 +1,5 @@
 import React from 'react';
-import SoundLib from '../lib/SoundLib';
+import SoundLib from '../Lib/SoundLib';
 
 export default class PreviewSound extends React.Component {
   constructor() {
