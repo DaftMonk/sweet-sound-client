@@ -1,6 +1,6 @@
 import Promise from 'bluebird';
 import React from 'react';
-import googleApiLoader from '../Lib/GoogleAPILoader';
+import googleApiLoader from '../Lib/GoogleApiLoader';
 import _ from 'lodash';
 import SuggestionBox from './SuggestionBox';
 import PreviewSound from './PreviewSound';
