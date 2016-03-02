@@ -1,8 +1,12 @@
 import React from 'react';
 import qs from 'qs';
 
-const clientId = '2376554812.23645499953';
-const clientSecret = 'a8fc14196984beee9faa03c827d90dc0';
+const clientId = process.env.NODE_ENV === 'production' ?
+  '2376554812.23846206866':
+  '2376554812.23645499953';
+const clientSecret = process.env.NODE_ENV === 'production' ?
+  'a8fc14196984beee9faa03c827d90dc0' :
+  '0aafceac20b11bf475e1ca5118390811';
 
 var getQueryString = function ( field, url ) {
   var href = url ? url : window.location.href;

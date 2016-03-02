@@ -1,7 +1,7 @@
 /* global gapi */
 
 import Promise     from 'bluebird';
-import appSettings from 'json!../../google_app_settings.json';
+import appSettings from '../../google_app_settings.js';
 
 let allClientsAvailable = false;
 
