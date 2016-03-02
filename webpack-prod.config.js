@@ -22,6 +22,9 @@ module.exports = {
     filename: 'bundle.[hash].js'
   },
   devtool:'source-map',
+  stats: {
+    errorDetails: true
+  },
   devServer: {
     // proxy calls to api to our own node server backend
     proxy: {
