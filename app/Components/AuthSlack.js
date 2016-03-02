@@ -28,8 +28,7 @@ export default class AuthSlack extends React.Component {
     fetch('https://slack.com/api/oauth.access?' + qs.stringify({
         client_id: clientId,
         client_secret: clientSecret,
-        code,
-        redirect_uri: 'http://localhost:8080'
+        code
       }), {
       method: 'get',
     })
