@@ -7,7 +7,6 @@ Preview and play sounds on slack.
 ```
 git clone git@github.com:DaftMonk/sweet-sound-client.git
 cd sweet-sound-client
-git remote add dokku dokku@104.236.156.249:sweet-sound-client
 npm install
 npm run dev
 ```
