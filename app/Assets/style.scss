@@ -84,8 +84,9 @@ body {
   margin: 12% auto;
 }
 
-body {
+html, body, #app, #app>div {
   font-family: Helvetica, sans-serif;
+  outline: none;
 }
 
 .react-autosuggest__container {
