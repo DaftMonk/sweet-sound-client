@@ -81,19 +81,36 @@ export default class SuggestionBox extends React.Component {
     }
 
     let matchingFolders = this.state.folders;
+    let suggestedFolders;
 
+
+    // folder: search
     let folderSearch = value.split(':');
-    if(folderSearch.length === 2) {
+    if (folderSearch.length === 2) {
       const folderQ = folderSearch[0].trim();
       const folderRegex = new RegExp('^' + folderQ, 'i');
       fileQ = folderSearch[1].trim();
 
       matchingFolders = this.state.folders.filter(folder => folderRegex.test(folder.title))
+
+    // Get folder hints
+    } else {
+      let filteredFolders = this.state.folders.filter(folder => (new RegExp(value, 'i')).test(folder.title));
+
+      // Only add folder suggestions if we actually found any
+      if (filteredFolders.length !== 0) {
+        suggestedFolders = {
+          title: 'folders suggestions',
+          files: filteredFolders.map(folder => {
+            return {title: folder.title}
+          })
+        }
+      }
     }
 
-    const fileRegex = new RegExp('^' + fileQ, 'i');
+    const fileRegex = new RegExp(fileQ, 'i');
 
-    return matchingFolders
+    let results = matchingFolders
       .map(folder => {
         let files = fileQ ? folder.files.filter(file => fileRegex.test(file.title)) : folder.files;
         files = files.sort((a, b) => (
@@ -106,6 +123,11 @@ export default class SuggestionBox extends React.Component {
         };
       })
       .filter(folder => folder.files.length > 0);
+
+    if (suggestedFolders) {
+      results = results.concat(suggestedFolders);
+    }
+    return results;
   }
 
   onSuggestionsUpdateRequested({ value }) {
