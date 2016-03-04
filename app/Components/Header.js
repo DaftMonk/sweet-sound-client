@@ -5,11 +5,11 @@ module.exports = React.createClass({
 
   render: function () {
     return (
-    	<div className='header'>
-    	Sweet Sound Client
-    	</div>
-		)
-	}
+      <div className='header'>
+        Sweet Sound Client
+      </div>
+    )
+  }
 
 });
 

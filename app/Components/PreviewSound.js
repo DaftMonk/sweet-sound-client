@@ -10,7 +10,7 @@ export default class PreviewSound extends React.Component {
 
     // refactor to use redux
     window.addEventListener('playSound', this.onPlaySound);
-    window.addEventListener('stopSound', this.onStopSound);;
+    window.addEventListener('stopSound', this.onStopSound);
   }
 
   componentWillUnmount() {

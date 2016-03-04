@@ -67,7 +67,7 @@ const execute = function (request) {
 const login = function (immediate) {
   return new Promise(function(resolve, reject) {
     gapi.auth.authorize({
-      'client_id': appSettings['client_id'],
+      'client_id': appSettings.client_id,
       'scope': appSettings.scopes.join(' '),
       'immediate': immediate
     }, function(authResult) {

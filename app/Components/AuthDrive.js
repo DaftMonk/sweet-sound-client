@@ -164,8 +164,12 @@ module.exports = React.createClass({
       };
 
       var spinner;
-      if(this.state.isAuthorized && !this.state.folders.length) {
-        spinner = (<div className="help-container"><Spinner spinnerName='three-bounce' noFadeIn={true}/> Loading drive files...</div>);
+      if (this.state.isAuthorized && !this.state.folders.length) {
+        spinner = (
+          <div className="help-container">
+            <Spinner spinnerName='three-bounce' noFadeIn={true}/> Loading drive files...
+          </div>
+        );
       }
 
       if (!this.state.isAuthorized) {
@@ -196,26 +200,32 @@ module.exports = React.createClass({
       )
 
       let playSound;
-      if(this.state.slackAccessToken) {
+      if (this.state.slackAccessToken) {
         playSound = (
           <div className="btn-container pull-right">
-            <PlaySlackSound accessToken={this.state.slackAccessToken} soundName={this.state.selectedSound.title}/>
+            <PlaySlackSound
+              accessToken={this.state.slackAccessToken}
+              soundName={this.state.selectedSound.title}/>
           </div>);
         slackAuth = null;
       }
 
-        return (<div>
+      return (
+        <div>
           {spinner}
           <div className="content-container">
             <HotKeys handlers={handlers}>
-              <SuggestionBox folders={this.state.folders} onSuggestionSelected={this.onSuggestionSelected} onKeyDown={this.onSuggestionKeyDown}/>
+              <SuggestionBox
+                folders={this.state.folders}
+                onSuggestionSelected={this.onSuggestionSelected}
+                onKeyDown={this.onSuggestionKeyDown}/>
             </HotKeys>
-            <PreviewSound downloadUrl={this.state.selectedSound.downloadUrl} />
+            <PreviewSound downloadUrl={this.state.selectedSound.downloadUrl}/>
             {playSound}
             {slackAuth}
             {helpBtn}
           </div>
-        </div>)
-
+        </div>
+      )
     }
 });

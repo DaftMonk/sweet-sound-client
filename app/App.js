@@ -21,8 +21,8 @@ module.exports = React.createClass({
           <div className="row">
             <div className="center-form panel">
               <div className="panel-body">
-                  <Header/>
-                  <AuthDrive/>
+                <Header/>
+                <AuthDrive/>
               </div>
             </div>
           </div>

@@ -148,22 +148,22 @@ export default class SuggestionBox extends React.Component {
     const { value, suggestions } = this.state;
     const inputProps = {
       placeholder: "Search for a sound",
-                   value,
+      value,
       onChange: this.onChange,
       onKeyDown: this.props.onKeyDown
     };
 
     return (
       <Autosuggest
-                   multiSection={true}
-                   onSuggestionSelected={this.props.onSuggestionSelected}
-                   suggestions={suggestions}
-                   onSuggestionsUpdateRequested={this.onSuggestionsUpdateRequested}
-                   getSuggestionValue={getSuggestionValue}
-                   renderSuggestion={renderSuggestion}
-                   renderSectionTitle={renderSectionTitle}
-                   getSectionSuggestions={getSectionSuggestions}
-                   inputProps={inputProps} />
+        multiSection={true}
+        onSuggestionSelected={this.props.onSuggestionSelected}
+        suggestions={suggestions}
+        onSuggestionsUpdateRequested={this.onSuggestionsUpdateRequested}
+        getSuggestionValue={getSuggestionValue}
+        renderSuggestion={renderSuggestion}
+        renderSectionTitle={renderSectionTitle}
+        getSectionSuggestions={getSectionSuggestions}
+        inputProps={inputProps}/>
     );
   }
 }
