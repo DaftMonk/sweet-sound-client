@@ -137,22 +137,22 @@ module.exports = React.createClass({
 
     clickHelp() {
       swal({   title: "Sound Client Help!",   html: `
-<div>Login with Slack to play sounds</div>
-<br>
-<div class="help-list">Search:
-<ul>
- <li><strong>":"</strong> to get all sound files</li>
- <li><strong>"folder:"</strong> to get all sound files in a folder</li>
-</ul>
-</div>
-<div class="help-list">Shortcuts:
-<ul>
-  <li><strong>command+enter</strong> to preview a sound</li>
-  <li><strong>esc</strong> to stop a preview</li>
-  <li><strong>shift+enter</strong> to play a sound on slack</li>
-</ul>
-</div>
- ` });
+        <div>Login with Slack to play sounds</div>
+        <br>
+        <div class="help-list">Search:
+          <ul>
+            <li><strong>":"</strong> to get all sound files</li>
+            <li><strong>"&lt;folder&gt;:"</strong> to get all sound files in a folder</li>
+          </ul>
+        </div>
+        <div class="help-list">Shortcuts:
+          <ul>
+            <li><strong>command+enter</strong> to preview a sound</li>
+            <li><strong>esc</strong> to stop a preview</li>
+            <li><strong>shift+enter</strong> to play a sound on slack</li>
+          </ul>
+        </div>
+      `});
     },
 
     render: function () {
