@@ -61,6 +61,9 @@ function getSubFolders(folderId) {
 
 module.exports = React.createClass({
 
+    maxCacheAge: 5 * 1000 * 60, // 5 min
+    maxSlackAge: 24 * 60 * 60 * 1000, // 1 day
+
     getInitialState: function() {
       return {
         isAuthorized: false,
@@ -70,36 +73,155 @@ module.exports = React.createClass({
     },
 
     componentDidMount: function () {
-      var _this = this;
-
+      var _this = this
       googleApiLoader.apiReady.then(() => {
-        _this.setState({isAuthorized: true});
-
-        return gapi.client.drive.files.list({
-          'q': "mimeType='application/vnd.google-apps.folder' and name='sounds'",
-          'pageSize': 10,
-          'fields': "nextPageToken, files(id, name)"
-        }).execute((resp) => {
-          var folders = resp.files;
-          var soundFolderId = folders[0].id;
-
-          var getSoundFolders = getSubFolders(soundFolderId).then((folders) => {
-            return Promise.reduce(folders, function(soundFolders, folder) {
-              return Promise.delay(100).then(() => {
-                return retrieveAllFiles(folder.id).then(function (files) {
-                  folder.files = files;
-                  soundFolders.push(folder);
-                  return soundFolders;
-                })
-              });
-            }, []);
-          });
-
-          getSoundFolders.then((soundFolders) => {
-            _this.setState({folders: soundFolders});
-          })
-        });
+        _this.setState({isAuthorized: true})
+        return _this.fetchFiles()
       });
+
+      _this.checkForSavedSlackToken()
+    },
+
+    queueFileRefresh() {
+      setTimeout(this.fetchFiles, this.maxCacheAge)
+    },
+
+
+    fetchFiles() {
+      var maxCacheMinutes = this.maxCacheAge / (1000 * 60)
+      var oldestAllowedCache = (new Date()).setMinutes((new Date()).getMinutes() - maxCacheMinutes)
+      var folderJson = localStorage.getItem('driveFileCache')
+      var cacheAge = localStorage.getItem('driveFileCacheTime')
+      var cacheIsStale = new Date(cacheAge) < oldestAllowedCache
+
+      if (!cacheAge || !folderJson) {
+        console.log('No valid cache, fetching new file listing')
+        return this.fetchFilesFromGoogle()
+      }
+
+
+      console.log('Files loaded from localstorage!')
+      this.setState({folders: JSON.parse(folderJson)})
+
+      // Cache is old.. but we don't have any files yet
+      // start google fetch, but use cache for now
+      if (cacheIsStale && !this.state.folders.length) {
+        console.log('Queuing Google fetch because the cache is stale...')
+        this.fetchFilesFromGoogle()
+      } else {
+        this.queueFileRefresh()
+      }
+    },
+
+
+    fetchFilesFromGoogle() {
+      var _this = this
+      var deletableFields = [
+        'appDataContents',
+        'copyable',
+        'editable',
+        'etag',
+        'explicitlyTrashed',
+        'iconLink',
+        'kind',
+        'labels',
+        'lastModifyingUser',
+        'lastViewedByMeDate',
+        'markedViewedByMeDate',
+        'mimeType',
+        'modifiedByMeDate',
+        'modifiedDate',
+        'ownerNames',
+        'owner',
+        'owners',
+        'version',
+        'parents',
+        'quotaBytesUsed',
+        'shared',
+        'spaces',
+        'userPermission',
+        'writersCanShare',
+        'alternateLink',
+        'fileExtension',
+        'headRevisionId',
+        'md5Checksum',
+        'originalFilename',
+        'selfLink',
+        'webContentLink'
+      ]
+
+      function cleanFileList(list) {
+        return list.map(function(file) {
+          deletableFields.forEach(function(deletableField) {
+            if (file[deletableField]) {
+              delete file[deletableField]
+            }
+          })
+          return file
+        })
+      }
+
+
+      if (_this.state.loadingFromGoogle) {
+        console.log('Alreading loading from Google... ignoring request')
+        return
+      }
+      _this.setState({loadingFromGoogle: true});
+      return gapi.client.drive.files.list({
+        'q': "mimeType='application/vnd.google-apps.folder' and name='sounds'",
+        'pageSize': 10,
+        'fields': "nextPageToken, files(id, name)"
+      }).execute((resp) => {
+        var folders = cleanFileList(resp.files)
+        
+        var soundFolderId = folders[0].id
+
+        var getSoundFolders = getSubFolders(soundFolderId).then((folders) => {
+          return Promise.reduce(folders, function(soundFolders, folder) {
+            return Promise.delay(100).then(() => {
+              return retrieveAllFiles(folder.id).then(function (files) {
+                
+                folder.files = cleanFileList(files)
+                soundFolders.push(folder)
+                return soundFolders
+              })
+            });
+          }, []);
+        });
+
+        getSoundFolders.then((soundFolders) => {
+          console.log('Saving files to localstorage...')
+          localStorage.setItem('driveFileCache', JSON.stringify(soundFolders))
+          localStorage.setItem('driveFileCacheTime', new Date())
+          _this.queueFileRefresh()
+          _this.setState({
+            folders: soundFolders,
+            loadingFromGoogle: false
+          });
+        })
+      });
+    },
+
+    checkForSavedSlackToken() {
+      var maxCacheMinutes = this.maxSlackAge / (1000 * 60)
+      var token = localStorage.getItem('slackAccessToken')
+      var tokenSavedString = localStorage.getItem('slackAccessTokenTime')
+      var oldestAllowedCache = (new Date()).setMinutes((new Date()).getMinutes() - maxCacheMinutes)
+      var cacheIsStale = new Date(tokenSavedString) < oldestAllowedCache
+
+      if (!token || !tokenSavedString) {
+        return
+      }
+
+      if (cacheIsStale) {
+        console.log('Local Slack token is older than a day, ignoring...')
+        localStorage.removeItem('slackAccessToken')
+        localStorage.removeItem('slackAccessTokenTime')
+        return
+      }
+
+      console.log('Slack token loaded from localstorage!')
+      this.setState({slackAccessToken: token})
     },
 
     signIn() {
@@ -111,7 +233,10 @@ module.exports = React.createClass({
     },
 
     onAuthenticatedWithSlack(resp) {
-      this.setState({slackAccessToken: resp.access_token});
+      console.log('Saving Slack token to localstorage...');
+      localStorage.setItem('slackAccessToken', resp.access_token)
+      localStorage.setItem('slackAccessTokenTime', new Date())
+      this.setState({slackAccessToken: resp.access_token})
     },
 
     playSound() {
@@ -193,9 +318,16 @@ module.exports = React.createClass({
 
       let helpBtn = (
         <div className="btn-container">
-          <button className="btn btn-default" onClick={this.clickHelp}>
-            <span className="ion-help"></span>
-          </button>
+          <div className="btn-group" role="group">
+            <button className="btn btn-default" onClick={this.clickHelp}>
+              <span className="ion-help"></span>
+            </button>
+            <button className="btn btn-default btn-fetch-google" onClick={this.fetchFilesFromGoogle}>
+              {this.state.loadingFromGoogle ?
+                <Spinner spinnerName='cube-grid'/> :
+                <span className="ion-loop"></span>}
+            </button>
+          </div>
         </div>
       )
 
