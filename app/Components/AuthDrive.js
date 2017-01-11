@@ -168,7 +168,7 @@ module.exports = React.createClass({
       }
       _this.setState({loadingFromGoogle: true});
       return gapi.client.drive.files.list({
-        'q': "mimeType='application/vnd.google-apps.folder' and name='sounds'",
+        'q': "mimeType='application/vnd.google-apps.folder' and name='sounds, -slack-sounds'",
         'pageSize': 10,
         'fields': "nextPageToken, files(id, name)"
       }).execute((resp) => {
